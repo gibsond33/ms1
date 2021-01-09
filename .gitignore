@@ -1,0 +1,9 @@
+*.listing
+*.so
+MS
+purchase/purchase
+purchase/*.so
+common/*.so
+stock/*.so
+stock/stock
+purchase/purchase

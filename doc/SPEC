@@ -1,0 +1,27 @@
+SPEC
+
+Requirements: Track all purchases and payments.
+              Produce monthly, quarterly, and yearly reports.
+              Produce month-to-date and year-to-date reports.
+              Produce reports by category, item, date/time supplier, brand,
+                 manufacturer, location, use type, or combination
+              (Future) compare current month/quarter/year with previous
+              Track deductible expenses
+              Track highest and average price per item
+              Track stock level/inventory
+              Track all changes to stored data for audit purposes
+              (Optional) Track events for auditing assistance 
+
+Constraints: Linux Based
+             COBOL Preferred
+             No graphical interface required. Optional to provide.
+             Use text-based interface.
+
+Guidance: Validate as mush as possible before writing to data stores.
+          Notate any assumptions and get confirmation. Notate confirmation by
+              whom and date.
+          Assume Arizona is only state used.  On-line may differ but how to
+              determine state, country?
+          Maintain record of tax rates such as when effective after development
+          Use look-up tables when possible and beneficial
+          Populate common look-up tables when system loaded

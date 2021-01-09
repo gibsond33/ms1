@@ -1,0 +1,78 @@
+All
+---
+ Make Check Date a callable module
+ Make Check Time a callable module
+
+Make numeric data entry generic
+
+Receipt
+-------
+  Set up default values
+  Move record from work to file
+x Change some values to computational
+    receipt  107 --> 106
+    purchase 111 --> 110
+  Change field entry logic to detect if the field changed (especially amend logic)
+  Add verification that it is okay to write the write
+  Add lookup for supplier
+  Adjust spacing on entry screen
+  Refactor heading and entry specific areas
+  Determine what record size should be leaving room for future expansion
+  Create program to fix values from old format (112 bytes)
+  Make ps010 able to accept more than one record per run
+  
+Add Supplier as module ps020
++ Determine what data to track
+  name
+  address
+  store number
+  (future, optional) operating hours
+  telephone
+  (optional) manager
+  (optional) EIN on file
+  membership only
+  membership expiration date
+  
+  
+Purchases
+---------
++ Determine what data to track
+  Deductible
+  Highest price
+  Average price
+  qty
+  item unit of measure(uom)
+  item price
+  (optional) number of units   if the item is purchases as a 2-pack , 12 pack, case etc.
+  unit cost
+  weight
+  weight uom
+  brand
+  manufacturer
+  category
+  suppliers (maintain 2,3,or 4?)
+
+Stock Inventory
+---------------
++ Determine what data to track
+  qty on-hand
+  value of totals items
+  suppliers (maintain 2,3,or 4?)
+
+  Determine how to keep data for average price calculation
+ - one thing is to keep the total price of all items and total number of the items in a
+   price history file and up[date the price history file as new items are purchased
+ - we could also maintain a field for each item with total price and total item-count but
+   we lose the ability to keep the individual prices.
+
+  Determine how to track where items are located
+  - what to do if item is split between multiple locations - use actual total at locations
+  - what location is comprised of (building, room, storage unit, place in storage unit)
+    -- room, storage unit, shelf, where on shelf (left, middle, front, back, right)
+    -- building may be future
+  
+  Do we want to track expiration/best used by dates - maybe future
+  
+  Do we want to track special diet items - yes
+  -- gluten-free, corn-free
+  -- also allergy
