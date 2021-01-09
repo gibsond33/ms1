@@ -181,9 +181,11 @@ get-menu-pick.
 do-the-pick.
   evaluate menu-choice
     when "C"
-      call "purchases" end-call
+      call "purchase" end-call
     when "D"
-      call "stocker" end-call
+      call "stock" end-call
+    when "Z"
+      call "syssetup" end-call
     when other
       display  "Sorry not yet available" at line 23 col 27 with foreground-color 5 end-display
       move space to menu-choice

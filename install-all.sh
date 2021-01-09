@@ -11,7 +11,7 @@ cp -pv MS ${INSTALL_DIR}/bin
 #cp -pv purchase/*.so ${INSTALL_DIR}/bin
 #cp -pv purchase/purchase ${INSTALL_DIR}/bin
 cp -pv common/*.so ${INSTALL_DIR}/bin
-cp -pv common/sysetup ${INSTALL_DIR}/bin
+cp -pv common/syssetup ${INSTALL_DIR}/bin
 
 echo "Do you want to run the program?"
 read input
