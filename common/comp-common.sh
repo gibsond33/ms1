@@ -11,5 +11,6 @@ do
   echo "compiled $file"
 done
 
+cobc -x ${COBCOPTS} -T syssetup.listing -Xref syssetup.cbl; echo "compiled syssetup.cbl"
 # cobc -x ${COBCOPTS} -T common.listing -Xref common.cbl; echo "compiled common.cbl"
 #

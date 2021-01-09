@@ -21,6 +21,13 @@ working-storage section.
   88  menu-choice-is-valid   values "A" "B" "C" "D" "E" "F" "G" "X" "Z".
   
 *> Date and time
+
+*> THis controls the entry and disply of the time.
+*> Zulu is CUT (GMT).  ll times are stored in locl format for now.
+01  time-formt-in-use pic x value "L".
+  88  time-format-is-local  value "L".
+  88  time-formt-is-zulu    value "Z".
+
 01  current-date-and-time.
   05  cdt-year         pic 9(04).
   05  cdt-month        pic 9(02).
@@ -46,11 +53,13 @@ working-storage section.
   05  filler           pic x(01).
   05  the-time-sec     pic 9(02).
 
+copy "date-time-ws.cpy".
 *> System parameters
 01  serial-number.
   05  serial-number-xx    pic xx   value "GD".
   05  serial-number-nnnn  pic 9999 value 1.
 
+*> Working parameters
 01  current-user   pic x(32).
 
 procedure division.
@@ -84,12 +93,24 @@ main-process.
 	end-if
 
 	*> user is okay
-	perform display-headings
-	move "N" to menu-choice-is-okay
-	perform accept-menu-choice
-	perform re-accept-menu-choice
-		until menu-choice-is-okay = "Y"
-	perform do-the-menu-choice
+	
+  accept the-time-is-now from time end-accept
+  move the-time-is-now to the-display-time
+
+  accept the-date-is-now from date YYYYMMDD end-accept
+  move the-date-is-now to the-display-date
+  
+  inspect the-display-time replacing all "/" by ":"
+>>D  display "*** " the-display-date " " the-display-time " ***" end-display
+
+ *> We need to display a menu and have the user select
+  *> an option, validate the option, and call the module
+  *> selected.
+  perform display-heading
+  perform display-menu
+  perform get-menu-pick
+  perform maintain-the-file
+    until menu-choice = "X"
 .
 
 get-user-credentials.
@@ -97,7 +118,7 @@ get-user-credentials.
   move "Joe Smith Industries" to current-user
   .
   
-display-headings.
+display-heading.
   display " " at line 01 col 01 erase eos end-display
   display program-name at line 03 col 01 foreground-color 2 end-display
   display serial-number-xx at line 24 col 74 foreground-color 3 end-display
@@ -115,23 +136,23 @@ display-headings.
   
 display-menu.
   display "System Menu" at line 03 col 30 foreground-color 2 end-display
-  display  "(A)  General Ledger"  at 1004 erase eos foreground-color 2 end-display
-  display  "(B)  Sales Ledger"    at 1104 foreground-color 2 end-display
-  display  "(C)  Purchase Ledger" at 1204 foreground-color 2 end-display
-  display  "(D)  Stock Control"   at 1304 foreground-color 2 end-display
-  display  "(E)  Order Entry"     at 1404 foreground-color 2 end-display
-  display  "(F)  Payroll"         at 1504 foreground-color 2 end-display
-  display  "(G)  Epos"            at 1604 foreground-color 2 end-display
-  display  "(H)  Recipe Book"     at 1044 foreground-color 2 end-display
-  display  "(N)  Nutrition Data"  at 1144 foreground-color 2 end-display
-  display  "(N)  Scheduler"       at 1244 foreground-color 2 end-display
+  display  "(A)  General Ledger"  at line 10 col 04 erase eos foreground-color 2 end-display
+  display  "(B)  Sales Ledger"    at line 11 col 04 foreground-color 2 end-display
+  display  "(C)  Purchase Ledger" at line 12 col 04 foreground-color 2 end-display
+  display  "(D)  Stock Control"   at line 13 col 04 foreground-color 2 end-display
+  display  "(E)  Order Entry"     at line 14 col 04 foreground-color 2 end-display
+  display  "(F)  Payroll"         at line 15 col 04 foreground-color 2 end-display
+  display  "(G)  Epos"            at line 16 col 04 foreground-color 2 end-display
+  display  "(H)  Recipe Book"     at line 10 col 44 foreground-color 2 end-display
+  display  "(N)  Nutrition Data"  at line 11 col 44 foreground-color 2 end-display
+  display  "(N)  Scheduler"       at line 12 col 44 foreground-color 2 end-display
 
-  display  "(X)  Exit To system" At 1444 foreground-color 2 end-display
-  display  "(Z)  System Setup" At 1644 foreground-color 2 end-display
+  display  "(X)  Exit To system" At line 14 col 44 foreground-color 2 end-display
+  display  "(Z)  System Setup" At line 16 col 44 foreground-color 2 end-display
   .
   
 accept-menu-choice.
-  display "Select one of the following by letter :- [ ]" at 0701 with foreground-color 2 end-display
+  display "Select one of the following by letter :- [ ]" at line 07 col 01 with foreground-color 2 end-display
   accept menu-choice at line 07 col 43 with foreground-color 6 end-accept
   move function upper-case(menu-choice) to menu-choice
   move "N" to menu-choice-is-okay
@@ -144,6 +165,50 @@ re-accept-menu-choice.
   perform accept-menu-choice
   .
   
-do-the-menu-choice.
+maintain-the-file.
+  perform do-the-pick
+  perform get-menu-pick
+  .
+
+get-menu-pick.
+  move spaces to menu-choice
+  perform display-menu
+  perform accept-menu-choice
+  perform re-accept-menu-choice
+    until menu-choice-is-okay = "Y"
+  .
+
+do-the-pick.
+  evaluate menu-choice
+    when "C"
+      call "purchases" end-call
+    when "D"
+      call "stocker" end-call
+    when other
+      display  "Sorry not yet available" at line 23 col 27 with foreground-color 5 end-display
+      move space to menu-choice
+  end-evaluate
+  .
+
+*>--------------
+*> Date routines
+*>--------------
+get-the-date.
+  move function current-date to current-date-and-time
+  .
+convert-the-date.
+  move cdt-year  to the-date-year
+  move cdt-month to the-date-month
+  move cdt-day   to the-date-day
+  .
+
+*>get-the-time.
+*>  accept current-time-n from time end-accept
+*>  move current-time-n(1:2) to the-time-hour
+*>  move current-time-n(3:2) to the-time-minutes
+*>  move current-time-n(5:2) to the-time-seconds
+  .
+copy "date-pd.cpy".
+copy "time-pd.cpy".
 
 end program MS.

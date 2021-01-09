@@ -1,5 +1,5 @@
       >> source format is free
-program-id. ms000.
+program-id. syssetup.
 *> This program encodes the user name or password.
 options.
   default rounded mode is nearest-even *> use banker's
@@ -38,4 +38,4 @@ closing-procedure.
 
 main-process.
 
-end program ms000.
+end program syssetup.

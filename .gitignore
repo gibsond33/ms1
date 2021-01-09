@@ -7,3 +7,7 @@ common/*.so
 stock/*.so
 stock/stock
 purchase/purchase
+psreceiptfix01.cbl
+*.dat*
+common/syssetup
+
